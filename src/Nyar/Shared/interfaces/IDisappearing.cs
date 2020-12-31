@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Blazor.Extensions.Canvas.Canvas2D;
 
 namespace Nyar.Shared.interfaces
 {
-    public interface IRendered
+    public interface IDisappearing
     {
-        public void Update(Canvas2DContext context);
+        public DateTime CreatedAt { get; }
+        public DateTime DisappearingAt { get; set; }
     }
 }
