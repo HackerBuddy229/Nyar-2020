@@ -1,0 +1,64 @@
+﻿@page "/fire"
+@using Nyar.Shared
+@inject WindowService WindowService
+
+
+
+<div>
+    <BECanvas Width="@_width" Height="@_canvasHeight" @ref="_canvasReference" ></BECanvas>
+    <div style="width: 100%; height: 10%; background: darkblue;" @onclick="TriggerTest"><bold>Click to trigger: @_width , @_height</bold></div>
+</div>
+
+@code {
+    private int _width = 1000;
+    private int _height = 1000;
+    private int _canvasHeight = 1000;
+
+    private BECanvasComponent _canvasReference;
+    private Canvas2DContext _context;
+
+
+    private IList<IRendered> RenderedItems { get; set; } = new List<IRendered>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var dimensions = await WindowService.GetDimensions();
+
+        _width = dimensions.Width;
+        _height = dimensions.Height;
+
+        _canvasHeight = (int)(_height * 0.9);
+
+        StateHasChanged();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        _context = await _canvasReference.CreateCanvas2DAsync();
+
+        await _context.SetFillStyleAsync("DarkSlateGray");
+        await _context.FillRectAsync(0, 0, _width, _canvasHeight);
+    }
+
+
+    private void TriggerTest(MouseEventArgs obj)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void CreateFireworks(int amount)
+    {
+        throw new NotImplementedException(nameof(CreateFireworks));
+    }
+
+    private void Explode(string id)
+    {
+        
+    }
+
+    private Particle CreateParticle(int x, int y, int angle)
+    {
+        throw new NotImplementedException(nameof(CreateParticle));
+    }
+
+}

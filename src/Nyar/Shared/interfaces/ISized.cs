@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Nyar.Shared.interfaces
 {
-    public interface IPyrotechnic : ISnowflake, IDisappearing, IPositioned, IMoving, IRendered, ISized
+    public interface ISized
     {
-        
+        public int Width { get; set; }
+        public int Height { get; set; }
     }
 }

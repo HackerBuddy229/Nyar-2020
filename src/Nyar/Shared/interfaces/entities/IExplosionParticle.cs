@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Nyar.Shared.interfaces.entities
 {
-    public interface IExplosionParticle
+    public interface IExplosionParticle : IPyrotechnic
     {
         
     }

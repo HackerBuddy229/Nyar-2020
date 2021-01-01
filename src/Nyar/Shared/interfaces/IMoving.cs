@@ -11,7 +11,7 @@ namespace Nyar.Shared.interfaces
         public double VelocityX { get; }
         public double VelocityY { get; }
 
-        public void AccelerateX(float amount);
-        public void AccelerateY(float amount);
+        public void AccelerateX(double amount);
+        public void AccelerateY(double amount);
     }
 }
