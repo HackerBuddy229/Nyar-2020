@@ -20,7 +20,7 @@ namespace Nyar.Shared
             CurrentX = x;
             CurrentY = y;
 
-            VelocityY = speed ?? 5; //default
+            VelocityY = speed ?? -5; //default
 
             _color = color;
 

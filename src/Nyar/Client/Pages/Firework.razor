@@ -71,11 +71,10 @@
     private void StopRender() => _renderTimer.Stop();
 
 
-    private async void TriggerTest(MouseEventArgs obj)
+    private void TriggerTest(MouseEventArgs obj)
     {
-        CreateFireworks(1);
+        CreateFireworks(4);
         StartRender();
-        
     }
 
     private void CreateFireworks(int amount)
@@ -87,7 +86,7 @@
             var xPosition = rng.Next(_width);
 
             RenderedItems
-                .Add(new Body(xPosition, 0, _bodyColor, TimeSpan.FromSeconds(2)));
+                .Add(new Body(xPosition, _canvasHeight, _bodyColor, TimeSpan.FromSeconds(2)));
         }
         OrderRenderedItems();
     }
@@ -101,10 +100,19 @@
             if (renderedItem.DoRender)
                 await renderedItem.Update(_context);
 
-            else if (renderedItem is IFireworkBody body)
-                Explode(body);
-
+            else switch (renderedItem)
+            {
+                case IFireworkBody body:
+                    Explode(body);
+                    break;
+                case IExplosionParticle particle:
+                    RenderedItems.Remove(particle);
+                    break;
+            }
         }
+
+        if (RenderedItems.Count <= 1)
+            StopRender();
     }
 
     private void Explode(IFireworkBody body)
