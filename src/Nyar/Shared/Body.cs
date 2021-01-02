@@ -20,7 +20,7 @@ namespace Nyar.Shared
             CurrentX = x;
             CurrentY = y;
 
-            VelocityY = speed ?? 10; //default
+            VelocityY = speed ?? 5; //default
 
             _color = color;
 
@@ -62,7 +62,7 @@ namespace Nyar.Shared
             VelocityY += amount;
         }
 
-        public async void Update(Canvas2DContext context)
+        public async Task Update(Canvas2DContext context)
         {
             //check do render
             if (!DoRender)
@@ -86,9 +86,11 @@ namespace Nyar.Shared
 
         }
 
-        public bool DoRender { get; private set; }
+        public int Priority { get; } = 1;
 
-        public int Width { get; set; }
-        public int Height { get; set; }
+        public bool DoRender { get; private set; } = true;
+
+        public int Width { get; set; } = 25;
+        public int Height { get; set; } = 25;
     }
 }

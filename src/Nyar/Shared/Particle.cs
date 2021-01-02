@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Blazor.Extensions.Canvas.Canvas2D;
 using Nyar.Shared.interfaces.entities;
 
@@ -15,6 +16,8 @@ namespace Nyar.Shared
             CurrentY = y;
 
             //init speed
+            VelocityY = (int) (Math.Cos(angle) * speed);
+            VelocityX = (int)(Math.Sin(angle) * speed);
 
             _color = color;
 
@@ -62,7 +65,7 @@ namespace Nyar.Shared
             VelocityX += amount;
         }
 
-        public async void Update(Canvas2DContext context)
+        public async Task Update(Canvas2DContext context)
         {
             //check do render
             if (!DoRender)
@@ -83,9 +86,11 @@ namespace Nyar.Shared
             MoveX(VelocityX);
         }
 
+        public int Priority { get; } = 2;
+
         public bool DoRender { get; private set; } = true;
 
-        public int Width { get; set; }
-        public int Height { get; set; }
+        public int Width { get; set; } = 15;
+        public int Height { get; set; } = 15;
     }
 }

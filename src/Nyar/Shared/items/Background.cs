@@ -19,11 +19,13 @@ namespace Nyar.Shared.items
         }
 
 
-        public async void Update(Canvas2DContext context)
+        public async Task Update(Canvas2DContext context)
         {
             await context.SetFillStyleAsync(Color);
             await context.FillRectAsync(0, 0, Width, Height);
         }
+
+        public int Priority { get; } = 0;
 
         public bool DoRender { get; } = true;
 

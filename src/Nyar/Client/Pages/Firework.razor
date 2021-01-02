@@ -1,5 +1,7 @@
 ﻿@page "/fire"
 @using Nyar.Shared
+@using System.Timers
+@using Nyar.Shared.items
 @inject WindowService WindowService
 
 
@@ -17,6 +19,15 @@
     private BECanvasComponent _canvasReference;
     private Canvas2DContext _context;
 
+    private readonly string _backgroundColor = "DarkSlateGray";
+    private readonly string _bodyColor = "Crimson";
+    private readonly string _particleColor = "DarkOrange";
+
+
+    private Timer _renderTimer;
+
+    private int frameRate = 50;
+
 
     private IList<IRendered> RenderedItems { get; set; } = new List<IRendered>();
 
@@ -29,36 +40,98 @@
 
         _canvasHeight = (int)(_height * 0.9);
 
-        StateHasChanged();
+        CreateRenderBase();
     }
+
+    private void CreateRenderBase()
+    {
+        RenderedItems.Add(new Background(_width, _canvasHeight, _backgroundColor));
+        OrderRenderedItems();
+    }
+
+    private void OrderRenderedItems() => RenderedItems = RenderedItems.OrderBy(x => x.Priority).ToList();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         _context = await _canvasReference.CreateCanvas2DAsync();
 
-        await _context.SetFillStyleAsync("DarkSlateGray");
-        await _context.FillRectAsync(0, 0, _width, _canvasHeight);
+        //        await _context.SetFillStyleAsync("DarkSlateGray");
+        //        await _context.FillRectAsync(0, 0, _width, _canvasHeight);
     }
 
-
-    private void TriggerTest(MouseEventArgs obj)
+    private void StartRender()
     {
-        throw new NotImplementedException();
+        var timer = new Timer(1000/frameRate);
+        timer.Elapsed += async (sender, args) => await Render();
+        _renderTimer = timer;
+
+        _renderTimer.Start();
+    }
+
+    private void StopRender() => _renderTimer.Stop();
+
+
+    private async void TriggerTest(MouseEventArgs obj)
+    {
+        CreateFireworks(1);
+        StartRender();
+        
     }
 
     private void CreateFireworks(int amount)
     {
-        throw new NotImplementedException(nameof(CreateFireworks));
+        var rng = new Random();
+
+        for (var firework = 0; firework < amount; firework++)
+        {
+            var xPosition = rng.Next(_width);
+
+            RenderedItems
+                .Add(new Body(xPosition, 0, _bodyColor, TimeSpan.FromSeconds(2)));
+        }
+        OrderRenderedItems();
     }
 
-    private void Explode(string id)
+    private async Task Render()
     {
-        
+        await _context.ClearRectAsync(0, 0, _width, _canvasHeight);
+
+        foreach (var renderedItem in RenderedItems)
+        {
+            if (renderedItem.DoRender)
+                await renderedItem.Update(_context);
+
+            else if (renderedItem is IFireworkBody body)
+                Explode(body);
+
+        }
+    }
+
+    private void Explode(IFireworkBody body)
+    {
+        RenderedItems.Remove(body);
+        var rng = new Random();
+
+
+        //createParticles
+        for (var particle = 0; particle < 8; particle++)
+        {
+            var minAngle =0+(45*particle);
+            var maxAngle =45+(45*particle);
+            var angle = rng.Next(minAngle, maxAngle);
+
+            RenderedItems.Add(CreateParticle(body.CurrentX, body.CurrentY, angle));
+        }
+
+        OrderRenderedItems();
     }
 
     private Particle CreateParticle(int x, int y, int angle)
     {
-        throw new NotImplementedException(nameof(CreateParticle));
+        var output =
+            new Particle(x, y, _particleColor, TimeSpan.FromSeconds(1.5), angle, 10);
+
+        return output;
     }
 
 }
